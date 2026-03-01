@@ -20,7 +20,10 @@ from datetime import datetime
 from pathlib import Path
 
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
+try:
+    from web3.middleware import ExtraDataToPOAMiddleware as _POAMiddleware
+except ImportError:
+    from web3.middleware import geth_poa_middleware as _POAMiddleware
 
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -29,7 +32,7 @@ RESULTS_DIR.mkdir(exist_ok=True)
 def monitor(network: str, port: int, duration: int, interval: float = 1.0):
     w3 = Web3(Web3.HTTPProvider(f"http://localhost:{port}",
               request_kwargs={"timeout": 10}))
-    w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+    w3.middleware_onion.inject(_POAMiddleware, layer=0)
 
     if not w3.is_connected():
         print(f"[monitor] Cannot connect to {network} on port {port}")
