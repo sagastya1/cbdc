@@ -102,6 +102,26 @@ def connect_web3(port: int, network: str) -> Web3:
     return w3
 
 
+
+def wait_for_blocks(w3: Web3, n: int = 2, timeout: int = 90):
+    """Wait until the node has produced at least n blocks (confirms sealer is active)."""
+    start = time.time()
+    print(f"[+] Waiting for {n} blocks to confirm sealer is active...")
+    while time.time() - start < timeout:
+        try:
+            bn = w3.eth.block_number
+            if bn >= n:
+                print(f"[+] Block #{bn} confirmed — sealer active.")
+                return
+        except Exception:
+            pass
+        time.sleep(1)
+    raise RuntimeError(
+        f"Node did not produce {n} blocks within {timeout}s. "
+        "Check --miner-enabled and --node-private-key-file are set correctly."
+    )
+
+
 def compile_and_deploy(w3: Web3, sol_path: str) -> str:
     """Compile CBDC.sol with py-solc-x, deploy, return contract address."""
     from solcx import compile_source, install_solc
@@ -130,7 +150,7 @@ def compile_and_deploy(w3: Web3, sol_path: str) -> str:
     }
     signed = account.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
-    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=60)
+    receipt = w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
     addr    = receipt["contractAddress"]
     print(f"[+] CBDC contract deployed at: {addr}")
 
@@ -198,6 +218,9 @@ def run_benchmark(args):
     sol_path = args.contract
 
     w3 = connect_web3(port, network)
+
+    # Ensure blocks are being produced before deploying
+    wait_for_blocks(w3, n=2, timeout=90)
 
     # Deploy contract
     contract_addr, abi = compile_and_deploy(w3, sol_path)
