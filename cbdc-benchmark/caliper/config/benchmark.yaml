@@ -1,0 +1,70 @@
+test:
+  name: CBDC Benchmark
+  description: Comparing Hyperledger Besu PoA vs QBFT consensus for CBDC workloads
+  workers:
+    number: 5
+  rounds:
+    - label: mint
+      description: Mint CBDC tokens (central bank operation)
+      txNumber: 1000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 50
+      workload:
+        module: caliper/workload/mint.js
+        arguments:
+          contractAddress: FILL_AT_RUNTIME
+          amount: "1000000000000000000"
+
+    - label: transfer
+      description: Transfer CBDC between accounts (payment simulation)
+      txNumber: 3000
+      rateControl:
+        type: linear-rate
+        opts:
+          startingTps: 20
+          finishingTps: 150
+      workload:
+        module: caliper/workload/transfer.js
+        arguments:
+          contractAddress: FILL_AT_RUNTIME
+
+    - label: balanceOf
+      description: Read balance queries (wallet/reporting)
+      txNumber: 1000
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 200
+      workload:
+        module: caliper/workload/balanceOf.js
+        arguments:
+          contractAddress: FILL_AT_RUNTIME
+
+    - label: mixed-realistic
+      description: Realistic CBDC workload from dataset (70% transfer, 20% mint, 10% query)
+      txNumber: 2000
+      rateControl:
+        type: fixed-backlog
+        opts:
+          unfinished_per_client: 10
+      workload:
+        module: caliper/workload/mixed.js
+        arguments:
+          contractAddress: FILL_AT_RUNTIME
+
+monitor:
+  type:
+    - docker
+    - process
+  docker:
+    name:
+      - all
+    interval: 2
+  process:
+    - command: node
+      arguments: caliper
+      multiOutput: avg
+      interval: 2
+  interval: 5
