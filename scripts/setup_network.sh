@@ -85,12 +85,14 @@ elif [ "${NETWORK}" = "qbft" ]; then
         "blockperiodseconds": 2,
         "epochlength": 30000,
         "requesttimeoutseconds": 4
-      }
+      },
+      "zeroBaseFee": true
     },
     "nonce": "0x0",
     "timestamp": "0x58ee40ba",
     "gasLimit": "0xE4E1C0",
     "difficulty": "0x1",
+    "baseFeePerGas": "0x0",
     "mixHash": "0x63746963616c2062797a616e74696e65206661756c7420746f6c6572616e6365",
     "coinbase": "0x0000000000000000000000000000000000000000",
     "alloc": {
@@ -144,6 +146,7 @@ nohup "${BESU_DIR}/bin/besu" \
   ${EXTRA_ARGS} \
   --host-allowlist="*" \
   --min-gas-price=0 \
+  --rpc-tx-feecap=0 \
   --p2p-port=${P2P_PORT} \
   --p2p-enabled=false \
   --discovery-enabled=false \
