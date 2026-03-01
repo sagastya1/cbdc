@@ -12,7 +12,9 @@
     "clique": {
       "period": 2,
       "epoch": 30000
-    }
+    },
+    "zeroBaseFee": true,
+    "londonBlock": 0
   },
   "difficulty": "0x1",
   "gasLimit": "0xE4E1C0",
@@ -24,5 +26,6 @@
     "627306090abaB3A6e1400e9345bC60c78a8BEf57": {
       "balance": "0xad78ebc5ac6200000"
     }
-  }
+  },
+  "baseFeePerGas": "0x0"
 }
