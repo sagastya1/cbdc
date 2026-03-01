@@ -6,7 +6,7 @@
 set -euo pipefail
 
 # ── Configuration ────────────────────────────────────────────
-INSTANCE_TYPE="c5.4xlarge"         # 16 vCPU, 32GB RAM
+INSTANCE_TYPE="t3.medium"         # 16 vCPU, 32GB RAM
 AMI_ID="ami-0c02fb55956c7d316"    # Amazon Linux 2023 (us-east-1)
                                    # Update per region: https://aws.amazon.com/amazon-linux-2/
 KEY_NAME="cbdc-benchmark-key"
