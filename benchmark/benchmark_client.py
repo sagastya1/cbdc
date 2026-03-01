@@ -141,12 +141,14 @@ def compile_and_deploy(w3: Web3, sol_path: str) -> str:
     chain_id = w3.eth.chain_id
 
     tx = {
-        "from":     account.address,
-        "nonce":    nonce,
-        "gas":      3_000_000,
-        "gasPrice": 0,
-        "chainId":  chain_id,
-        "data":     "0x" + bytecode,
+        "from":             account.address,
+        "nonce":            nonce,
+        "gas":              3_000_000,
+        "maxFeePerGas":     0,
+        "maxPriorityFeePerGas": 0,
+        "chainId":          chain_id,
+        "data":             "0x" + bytecode,
+        "type":             2,
     }
     signed = account.sign_transaction(tx)
     tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
@@ -173,11 +175,12 @@ def seed_accounts(w3: Web3, contract, accounts: list, amount_per: int = 10**24):
         tx = contract.functions.batchMint(
             batch, amount_per
         ).build_transaction({
-            "from":     account.address,
-            "nonce":    nonce,
-            "gas":      2_000_000,
-            "gasPrice": 0,
-            "chainId":  chain_id,
+            "from":                 account.address,
+            "nonce":                nonce,
+            "gas":                  2_000_000,
+            "maxFeePerGas":         0,
+            "maxPriorityFeePerGas": 0,
+            "chainId":              chain_id,
         })
         signed  = account.sign_transaction(tx)
         tx_hash = w3.eth.send_raw_transaction(signed.raw_transaction)
@@ -263,11 +266,12 @@ def run_benchmark(args):
             tx = contract.functions.mint(
                 to_addr, amount
             ).build_transaction({
-                "from":     deployer.address,
-                "nonce":    nonce,
-                "gas":      100_000,
-                "gasPrice": 0,
-                "chainId":  chain_id,
+                "from":                 deployer.address,
+                "nonce":                nonce,
+                "gas":                  100_000,
+                "maxFeePerGas":         0,
+                "maxPriorityFeePerGas": 0,
+                "chainId":              chain_id,
             })
             signed   = deployer.sign_transaction(tx)
             t_send   = time.time()
