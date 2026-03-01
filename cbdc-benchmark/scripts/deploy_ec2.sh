@@ -11,7 +11,7 @@ AMI_ID="ami-0c02fb55956c7d316"    # Amazon Linux 2023 (us-east-1)
                                    # Update per region: https://aws.amazon.com/amazon-linux-2/
 KEY_NAME="cbdc-benchmark-key"
 SG_NAME="cbdc-benchmark-sg"
-REPO_URL="https://github.com/YOUR_ORG/cbdc-benchmark.git"  # UPDATE THIS
+REPO_URL="https://github.com/sagastya1/cbdc.git"  # UPDATE THIS
 REGION="${AWS_DEFAULT_REGION:-us-east-1}"
 DATA_BUCKET=""   # Optional: s3://your-bucket/realtime_txn_dataset.csv
 
